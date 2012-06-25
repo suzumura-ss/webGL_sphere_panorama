@@ -1,0 +1,63 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#controller {
+  position: absolute;
+  z-index: 100;
+  width: 500px;
+  height: 380px;
+  top: 0px;
+  left: 0px;
+  -webkit-transform: translateZ(2000px);
+  -moz-transform: translateZ(2000px);
+}
+
+.container {
+  width: 500px;
+  height: 380px;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.infowindow {
+  position: absolute;
+  z-index: 10;
+  background: white;
+  color: black;
+  text-align: center;
+  font: bold 16px Helvetica;
+  padding: 20px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  opacity: 0.7;
+  -webkit-transform: translateZ(1000px);
+  -moz-transform: translateZ(1000px);
+}
+
+#loading {
+  width: 400px;
+  top: 140px;
+  left: 50px;
+  background: black;
+  color: white;
+  font: bold 24px Helvetica;
+}
+
+#info {
+  display: none;
+  width: 580px;
+  top: 540px;
+  left: 10px;
+}
+
+#texture {
+  display: none;
+}
+
+#textureSample {
+  display: none;
+}

@@ -1,0 +1,131 @@
+'use strict';
+
+var rotY = 0;
+var rotX = 0;
+var camZ = 0;
+
+var active = 0;
+var lastX;
+var lastY;
+var lastZ;
+
+var container;
+var camera, scene, renderer;
+var mesh;
+var textureSource = null;
+var tex;
+
+function init()
+{
+  var e = $(document);
+  e.mousedown(startDrag);
+  e.mousemove(moveDrag);
+  e.mouseup(endDrag);
+  e.mouseout(endDrag);
+  e.mousewheel(moveWheel);
+  
+  var l = $("#loading");
+  if(checksupport()) {
+    init_panorama();
+    l.remove();
+    doRotate(0, 0, 0, 0, 0);
+  } else {
+    l.text("WebGL is not supported.");
+    return;
+  }
+}
+
+function init_panorama()
+{
+  textureSource = $("#texture");
+  container = $("#container");
+  var width = container.width();
+  var height = container.height();
+
+  scene = new THREE.Scene();
+
+  tex = new THREE.Texture(textureSource[0]);
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  mesh = new THREE.Mesh( new THREE.SphereGeometry( 200, 20, 20 ), new THREE.MeshBasicMaterial( { map: tex, overdraw: true } ) );
+  mesh.doubleSided = false;
+  mesh.flipSided = true;
+  scene.add( mesh );
+
+  camera = new THREE.PerspectiveCamera( 60, width / height, 1, 10000 );
+  camera.position.z = 500;
+  camera.lookAt( scene.position );
+  scene.add( camera );
+
+  renderer = new THREE.CanvasRenderer();
+  renderer.setSize( width, height );
+
+  container[0].appendChild( renderer.domElement );
+
+  //animate();
+}
+
+function animate()
+{
+  requestAnimationFrame( animate );
+}
+
+function render()
+{
+  renderer.render( scene, camera );
+}
+
+function checksupport() {
+  var props = ['webgl', 'experimental-webgl'];
+  var c = document.createElement("canvas");
+  for(var i=0; i<props.length; i++) {
+    if(c.getContext(props[i])) {
+      return true;
+    }
+  }
+  return false;
+} 
+
+function startDrag(e)
+{
+  e.preventDefault();
+  active = "mouse";
+  lastX = e.clientX;
+  lastY = e.clientY;
+}
+
+function moveDrag(e)
+{
+  e.preventDefault();
+  if(active) {
+    doRotate(lastX, lastY, e.clientX, e.clientY, 0);
+    lastX = e.clientX;
+    lastY = e.clientY;
+  }
+}
+
+function endDrag(e)
+{
+  e.preventDefault();
+  active = 0;
+}
+
+function moveWheel(e, d)
+{
+  e.preventDefault();
+  doRotate(0, 0, 0, 0, d);
+}
+
+function doRotate(lastX, lastY, curX, curY, wheelDelta)
+{
+  rotY -= (curX - lastX) * 0.25;
+  rotX -= (curY - lastY) * 0.25;
+  rotX = Math.max(-88, Math.min(88, rotX));
+  camZ += wheelDelta;
+
+  mesh.rotation.y = Math.PI*rotY/180.0;
+  mesh.rotation.x = Math.PI*rotX/180.0;
+  camera.position.z = camZ;
+
+  render();
+}
