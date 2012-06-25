@@ -17,16 +17,15 @@ var tex;
 
 function init()
 {
-  var e = $(document);
-  e.mousedown(startDrag);
-  e.mousemove(moveDrag);
-  e.mouseup(endDrag);
-  e.mouseout(endDrag);
-  e.mousewheel(moveWheel);
-  
   var l = $("#loading");
   if(checksupport()) {
     init_panorama();
+    var e = $(document);
+    e.mousedown(startDrag);
+    e.mousemove(moveDrag);
+    e.mouseup(endDrag);
+    e.mouseout(endDrag);
+    e.mousewheel(moveWheel);
     l.remove();
     doRotate(0, 0, 0, 0, 0);
   } else {
