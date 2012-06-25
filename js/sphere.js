@@ -13,10 +13,27 @@ var container;
 var camera, scene, renderer;
 var mesh;
 var textureSource = null;
+var textureSample = null, textureSampleCtx = null;
 var tex;
 
 function init()
 {
+  textureSource = $("#texture");
+  var t = textureSource[0];
+  if(t.tagName.toLowerCase()=="video") {
+    // video
+    if(t.readyState!=t.HAVE_ENOUGH_DATA) {
+      setTimeout(init, 100);
+      return;
+    }
+    textureSample = $("#textureSample");
+    textureSample[0].width = textureSource.width();
+    textureSample[0].height = textureSource.height();
+    textureSampleCtx = textureSample[0].getContext('2d');
+  } else {
+    // image
+  } 
+
   var l = $("#loading");
   if(checksupport()) {
     init_panorama();
@@ -36,14 +53,13 @@ function init()
 
 function init_panorama()
 {
-  textureSource = $("#texture");
   container = $("#container");
   var width = container.width();
   var height = container.height();
 
   scene = new THREE.Scene();
 
-  tex = new THREE.Texture(textureSource[0]);
+  tex = new THREE.Texture((textureSample||textureSource)[0]);
   tex.minFilter = THREE.LinearFilter;
   tex.magFilter = THREE.LinearFilter;
   mesh = new THREE.Mesh( new THREE.SphereGeometry( 200, 20, 20 ), new THREE.MeshBasicMaterial( { map: tex, overdraw: true } ) );
@@ -61,12 +77,17 @@ function init_panorama()
 
   container[0].appendChild( renderer.domElement );
 
-  //animate();
+  if(textureSampleCtx) {
+    animate();
+  }
 }
 
 function animate()
 {
   requestAnimationFrame( animate );
+  textureSampleCtx.drawImage(textureSource[0], 0,0);
+  tex.needsUpdate = true;
+  render();
 }
 
 function render()

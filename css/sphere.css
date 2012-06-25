@@ -47,11 +47,9 @@ body {
   font: bold 24px Helvetica;
 }
 
-#info {
-  display: none;
-  width: 580px;
-  top: 540px;
-  left: 10px;
+#texture_info {
+  position: absolute;
+  top: 400px;
 }
 
 #texture {
