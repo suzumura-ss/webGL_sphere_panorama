@@ -26,9 +26,10 @@ function init()
       setTimeout(init, 100);
       return;
     }
-    textureSample = $("#textureSample");
-    textureSample[0].width = textureSource.width();
-    textureSample[0].height = textureSource.height();
+    var v = $("#controller").append('<canvas style="display:none" width="'
+                                     + textureSource.width() + 'px" height="'
+                                     + textureSource.height() + 'px"></canvas>');
+    textureSample = $(v[0].getElementsByTagName("canvas"));
     textureSampleCtx = textureSample[0].getContext('2d');
   } else {
     // image
